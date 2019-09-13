@@ -1,0 +1,12 @@
+ServiceA/agent/logs/
+ServiceB/agent/logs/
+ServiceA/target/
+ServiceB/target/
+ServiceA/.settings/
+ServiceB/.settings/
+ServiceA/.classpath
+ServiceB/.classpath
+ServiceA/.project
+ServiceB/.project
+ServiceA/.DS_Store
+ServiceB/.DS_Store
