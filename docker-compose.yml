@@ -17,12 +17,11 @@
 version: '3.3'
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
     container_name: elasticsearch
     restart: always
     ports:
       - 9200:9200
-      - 9300:9300
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -33,7 +32,7 @@ services:
         soft: -1
         hard: -1
   oap:
-    image: apache/skywalking-oap-server:6.4.0
+    image: apache/skywalking-oap-server:8.0.1-es7
     container_name: oap
     depends_on:
       - elasticsearch
@@ -44,11 +43,11 @@ services:
       - 11800:11800
       - 12800:12800
     environment:
-      SW_STORAGE: elasticsearch
+      SW_STORAGE: elasticsearch7
       SW_STORAGE_ES_CLUSTER_NODES: elasticsearch:9200
       TZ: "Europe/Istanbul"
   ui:
-    image: apache/skywalking-ui:6.4.0
+    image: apache/skywalking-ui:8.0.1
     container_name: ui
     depends_on:
       - oap
@@ -56,14 +55,13 @@ services:
       - oap
     restart: always
     ports:
-      - 8080:8080
+      - 1080:8080
     environment:
       SW_OAP_ADDRESS: oap:12800
       TZ: "Europe/Istanbul"
-
   mongo:
     image: mongo
     ports:
       - 27017:27017
     environment:
-      TZ: "Europe/Istanbul"
+      TZ: "Europe/Istanbul"      
