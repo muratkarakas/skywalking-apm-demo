@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: apm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
+        imagePullPolicy: IfNotPresent
+        name: elasticsearch 
+        ports:
+        - containerPort: 9200
+          protocol: TCP
+        env:
+          - name: discovery.type
+            value: single-node 
+          - name:  bootstrap.memory_lock
+            value: "true"
+          - name: ES_JAVA_OPTS
+            value: -Xms512m -Xmx512m  
+          - name: TZ
+            value: Europe/Istanbul                                         
+        resources:
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: apm
+  labels:
+     app: elasticsearch
+     version: v1
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+    name: http
+  selector:
+    app: elasticsearch

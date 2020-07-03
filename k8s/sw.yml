@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-oap
+  namespace: apm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sw-oap
+  template:
+    metadata:
+      labels:
+        app: sw-oap
+    spec:
+      containers:
+      - image: apache/skywalking-oap-server:8.0.1-es7
+        imagePullPolicy: IfNotPresent
+        name: sw-oap 
+        ports:
+        - containerPort: 11800
+          protocol: TCP
+        - containerPort: 12800
+          protocol: TCP          
+        env:
+          - name: SW_STORAGE
+            value: elasticsearch7
+          - name:  SW_STORAGE_ES_CLUSTER_NODES
+            value: elasticsearch:9200
+          - name: TZ
+            value: Europe/Istanbul                                         
+        resources:
+            limits:
+              cpu: "300m"
+              memory: "1024Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-oap
+  namespace: apm
+  labels:
+     app: sw-oap 
+spec:
+  ports:
+  - port: 12800
+    targetPort: 12800
+    name: http
+  - port: 11800
+    targetPort: 11800
+    name: http2    
+  selector:
+    app: sw-oap 
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-ui
+  namespace: apm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sw-ui
+  template:
+    metadata:
+      labels:
+        app: sw-ui
+    spec:
+      containers:
+      - image: apache/skywalking-ui:8.0.1
+        imagePullPolicy: IfNotPresent
+        name: sw-ui 
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+          - name:  SW_OAP_ADDRESS
+            value: sw-oap:12800
+          - name: TZ
+            value: Europe/Istanbul                                         
+        resources:
+            limits:
+              cpu: "300m"
+              memory: "1024Mi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-ui
+  namespace: apm
+  labels:
+     app: sw-ui
+     version: v1
+spec:
+  ports:
+  - nodePort: 32080
+    port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: sw-ui
+  type: NodePort
