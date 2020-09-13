@@ -14,7 +14,7 @@ spec:
         app: sw-oap
     spec:
       containers:
-      - image: apache/skywalking-oap-server:8.0.1-es7
+      - image: apache/skywalking-oap-server:8.1.0-es7
         imagePullPolicy: IfNotPresent
         name: sw-oap 
         ports:
@@ -73,7 +73,7 @@ spec:
         app: sw-ui
     spec:
       containers:
-      - image: apache/skywalking-ui:8.0.1
+      - image: apache/skywalking-ui:8.1.0
         imagePullPolicy: IfNotPresent
         name: sw-ui 
         ports:
