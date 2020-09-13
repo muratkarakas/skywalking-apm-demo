@@ -43,9 +43,33 @@ services:
     environment:
       SW_OAP_ADDRESS: oap:12800
       TZ: "Europe/Istanbul"
-  mongo:
+  mongodb:
     image: mongo
     ports:
       - 27017:27017
     environment:
       TZ: "Europe/Istanbul"      
+
+
+  service-a:
+    image: service-a
+    depends_on:
+      - oap
+    links:
+      - oap
+    ports:
+      - 9090:9090
+    environment:
+      TZ: "Europe/Istanbul"
+
+  service-b:
+    image: service-b
+    depends_on:
+      - oap    
+    links:
+      - oap
+      - mongodb
+    ports:
+      - 8090:8090
+    environment:
+      TZ: "Europe/Istanbul"        

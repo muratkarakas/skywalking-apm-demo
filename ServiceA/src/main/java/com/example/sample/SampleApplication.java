@@ -36,7 +36,7 @@ public class SampleApplication {
 
 			Thread.sleep(2000);
 
-			String serviceBody = restTemplate.getForEntity("http://localhost:8090/customers", String.class).getBody();
+			String serviceBody = restTemplate.getForEntity("http://service-b:8090", String.class).getBody();
 
 			System.out.println(serviceBody);
 		} catch (Exception e) {
